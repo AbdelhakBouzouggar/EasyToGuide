@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
-// Sample data for guides (same as in Guides.jsx)
 const guidesData = [
     {
         id: 1,
@@ -125,15 +124,51 @@ const guidesData = [
     }
 ]
 
-const Guide = () => {
+function Guide() {
     const { id } = useParams()
     const [guide, setGuide] = useState(null)
     const [loading, setLoading] = useState(true)
     const [activeTab, setActiveTab] = useState('about')
-    const [selectedDate, setSelectedDate] = useState('')
+
+    const [startDate, setStartDate] = useState('')
+    const [endDate, setEndDate] = useState('')
+
+    const [showAlert, setShowAlert] = useState(false)
+
+    const navigate = useNavigate()
+
+    const getValidEndDates = (start) => {
+        if (!start) return []
+
+        const startDateObj = new Date(start)
+        const endDateOptions = []
+
+        for (let i = 1; i <= 14; i++) {
+            const date = new Date(startDateObj)
+            date.setDate(startDateObj.getDate() + i)
+            const dayName = date.toLocaleDateString('en-US', { weekday: 'long' })
+
+            if (guide.availability.includes(dayName)) {
+                endDateOptions.push({
+                    value: date.toISOString().split('T')[0],
+                    label: date.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })
+                })
+            }
+        }
+
+        return endDateOptions
+    }
+
+    const [endDateOptions, setEndDateOptions] = useState([])
+
+    const handleStartDateChange = (value) => {
+        setStartDate(value)
+        setEndDate('')
+        const validEndDates = getValidEndDates(value)
+        setEndDateOptions(validEndDates)
+    }
 
     useEffect(() => {
-        // Simulate API fetch
         setTimeout(() => {
           const foundGuide = guidesData.find(g => g.id === parseInt(id))
           setGuide(foundGuide)
@@ -143,43 +178,46 @@ const Guide = () => {
 
     if (loading) {
         return (
-          <div className="min-h-screen flex justify-center items-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
-          </div>
+            <div className="min-h-screen flex justify-center items-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+            </div>
         )
     }
 
     if (!guide) {
         return (
-          <div className="min-h-screen flex justify-center items-center">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold text-gray-700 mb-4">Guide Not Found</h2>
-              <p className="text-gray-600 mb-6">The guide you're looking for doesn't exist or has been removed.</p>
-              <Link to="/guides" className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded transition-colors">
-                Back to Guides
-              </Link>
+            <div className="min-h-screen flex justify-center items-center">
+                <div className="text-center">
+                    <h2 className="text-2xl font-bold text-gray-700 mb-4">Guide Not Found</h2>
+                    <p className="text-gray-600 mb-6">The guide you're looking for doesn't exist or has been removed.</p>
+                    <button
+                        onClick={() => {
+                            navigate('/guides')
+                            window.scrollTo(0, 0)
+                        }}
+                        className="bg-[#d44b1d] hover:bg-[#d44b1dea] text-white font-medium py-2 px-6 rounded transition-colors cursor-pointer">
+                        Back to Guides
+                    </button>
+                </div>
             </div>
-          </div>
         )
     }
 
-    // Generate dates for the next 14 days for the booking calendar
     const generateDates = () => {
         const dates = []
         const today = new Date()
         
         for (let i = 1; i <= 14; i++) {
-          const date = new Date(today)
-          date.setDate(today.getDate() + i)
-          
-          // Only include dates that match the guide's availability
-          const dayName = date.toLocaleDateString('en-US', { weekday: 'long' })
-          if (guide.availability.includes(dayName)) {
-            dates.push({
-              value: date.toISOString().split('T')[0],
-              label: date.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })
-            })
-          }
+            const date = new Date(today)
+            date.setDate(today.getDate() + i)
+            
+            const dayName = date.toLocaleDateString('en-US', { weekday: 'long' })
+            if (guide.availability.includes(dayName)) {
+                dates.push({
+                    value: date.toISOString().split('T')[0],
+                    label: date.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })
+                })
+            }
         }
         
         return dates
@@ -189,229 +227,291 @@ const Guide = () => {
 
     return (
         <div className="min-h-screen bg-gray-50 py-12">
-            <div className="container mx-auto px-4">
-              {/* Guide Profile */}
-              <div className="bg-white rounded-lg shadow-md overflow-hidden mb-8">
-                <div className="md:flex">
-                  <div className="md:w-1/3">
-                    <img src={guide.image} alt={guide.name} className="w-full h-full object-cover" />
-                  </div>
-                  <div className="md:w-2/3 p-6">
-                    <div className="flex justify-between items-start mb-4">
-                      <div>
-                        <h1 className="text-3xl font-bold mb-2">{guide.name}</h1>
-                        <p className="text-gray-600 font-medium mb-2">{guide.specialty}</p>
-                        
-                        {/* Rating */}
-                        <div className="flex items-center mb-4">
-                          <div className="flex text-yellow-400">
-                            {[...Array(5)].map((_, i) => (
-                              <svg
-                                key={i}
-                                className={`w-5 h-5 ${i < Math.floor(guide.rating) ? 'text-yellow-400' : 'text-gray-300'}`}
-                                fill="currentColor"
-                                viewBox="0 0 20 20"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                              </svg>
-                            ))}
-                          </div>
-                          <span className="text-gray-600 ml-2">
-                            {guide.rating} ({guide.reviews} reviews)
-                          </span>
-                        </div>
-                        
-                        {/* Languages */}
-                        <div className="mb-4">
-                          <p className="text-sm text-gray-600 mb-1">Languages:</p>
-                          <div className="flex flex-wrap gap-1">
-                            {guide.languages.map((language, index) => (
-                              <span key={index} className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">
-                                {language}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-center text-gray-700">
-                          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                          </svg>
-                          <span>Experience: {guide.experience}</span>
-                        </div>
-                      </div>
-                      
-                      <div className="text-center">
-                        <div className="bg-green-100 text-green-800 text-xl font-bold px-4 py-2 rounded mb-2">
-                          {guide.price} {guide.currency}
-                          <span className="text-sm font-normal">/day</span>
-                        </div>
-                        
-                        {/* Quick Booking */}
-                        <div className="mt-4">
-                          <div className="mb-3">
-                            <select
-                              value={selectedDate}
-                              onChange={(e) => setSelectedDate(e.target.value)}
-                              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
-                            >
-                              <option value="">Select a date</option>
-                              {availableDates.map((date) => (
-                                <option key={date.value} value={date.value}>
-                                  {date.label}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                          <button
-                            className={`bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded transition-colors ${
-                              !selectedDate ? 'opacity-50 cursor-not-allowed' : ''
-                            }`}
-                            disabled={!selectedDate}
-                          >
-                            Book Now
-                          </button>
-                        </div>
-                      </div>
+            {showAlert && (
+                <div className="fixed top-16 right-1 flex items-center justify-center z-50">
+                    <div className="bg-green-100 border border-green-400 text-green-700 rounded-md p-4 max-w-lg w-full mx-auto shadow-lg flex items-center">
+                        <svg className="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span className="flex-1 text-sm">
+                            Successfully booked from <strong>{new Date(startDate).toLocaleDateString()}</strong> to <strong>{new Date(endDate).toLocaleDateString()}</strong>!
+                        </span>
+                        <button
+                            onClick={() => setShowAlert(false)}
+                            className="text-green-700 hover:text-green-900 focus:outline-none ml-2 cursor-pointer"
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
                     </div>
-                  </div>
                 </div>
-              </div>
+            )}
+            <div className="container mx-auto px-4">
+                <div className="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+                    <div className="md:flex">
+                        <div className="md:w-1/3">
+                            <img src={guide.image} alt={guide.name} className="w-full h-full object-cover" />
+                        </div>
+                        <div className="md:w-2/3 p-6">
+                            <div className="flex justify-between items-start mb-4">
+                                <div>
+                                    <h1 className="text-3xl font-bold mb-2">{guide.name}</h1>
+                                    <p className="text-gray-600 font-medium mb-2">{guide.specialty}</p>
+                                    
+                                    <div className="flex items-center mb-4">
+                                        <div className="flex text-yellow-400">
+                                            {[...Array(5)].map((_, i) => (
+                                            <svg
+                                                key={i}
+                                                className={`w-5 h-5 ${i < Math.floor(guide.rating) ? 'text-yellow-400' : 'text-gray-300'}`}
+                                                fill="currentColor"
+                                                viewBox="0 0 20 20"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                            >
+                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                            </svg>
+                                            ))}
+                                        </div>
+                                        <span className="text-gray-600 ml-2">
+                                            {guide.rating} ({guide.reviews} reviews)
+                                        </span>
+                                    </div>
+                                    
+                                    <div className="mb-4">
+                                        <p className="text-sm text-gray-600 mb-1">Languages:</p>
+                                        <div className="flex flex-wrap gap-1">
+                                            {guide.languages.map((language, index) => (
+                                            <span key={index} className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">
+                                                {language}
+                                            </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="flex items-center text-gray-700">
+                                        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        <span>Experience: {guide.experience}</span>
+                                    </div>
+                                </div>
+                                
+                                <div className="text-center">
+                                    <div className="bg-green-100 text-green-800 text-xl font-bold px-4 py-2 rounded mb-2">
+                                        {guide.price} {guide.currency}
+                                        <span className="text-sm font-normal">/day</span>
+                                    </div>
+                                    
+                                    <div className="mt-4">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                                                <select
+                                                value={startDate}
+                                                onChange={(e) => handleStartDateChange(e.target.value)}
+                                                className="w-full px-4 py-2 border cursor-pointer border-gray-300 rounded-md focus:ring-[#d44b1d] focus:outline-none focus:border-[#d44b1d]"
+                                                >
+                                                <option value="">Select start date</option>
+                                                {availableDates.map((date) => (
+                                                    <option key={date.value} value={date.value}>
+                                                    {date.label}
+                                                    </option>
+                                                ))}
+                                                </select>
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                                                <select
+                                                value={endDate}
+                                                onChange={(e) => setEndDate(e.target.value)}
+                                                disabled={!startDate}
+                                                className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#d44b1d] focus:outline-none focus:border-[#d44b1d] ${
+                                                    !startDate ? 'bg-gray-100 cursor-not-allowed' : 'cursor-pointer'
+                                                }`}
+                                                >
+                                                <option value="">Select end date</option>
+                                                {endDateOptions.map((date) => (
+                                                    <option key={date.value} value={date.value}>
+                                                    {date.label}
+                                                    </option>
+                                                ))}
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        {startDate && endDate && (
+                                            <p className="mt-2">
+                                                You are booking from{' '}
+                                                <strong className='text-green-600'>{new Date(startDate).toLocaleDateString()}</strong> to{' '}
+                                                <strong className='text-green-600'>{new Date(endDate).toLocaleDateString()}</strong>. {' '}
+                                                <span className="text-gray-700">
+                                                    That's a total of <strong>{Math.ceil((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24)) + 1}</strong> day(s).
+                                                </span>
+                                            </p>
+                                        )}
+
+                                        <button
+                                            className={`bg-[#d44b1d] hover:bg-[#d44b1dea] text-white font-medium py-2 px-6 rounded transition-colors w-full cursor-pointer ${
+                                                !startDate || !endDate ? 'opacity-50 cursor-not-allowed' : ''
+                                            }`}
+                                            disabled={!startDate || !endDate}
+                                            onClick={() => {
+                                                if (startDate && endDate) {
+                                                    setShowAlert(true)
+                                                    setTimeout(() => setShowAlert(false), 3000)
+                                                }
+                                            }}
+                                        >
+                                        Book Now
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
               
-              {/* Tabs */}
-              <div className="bg-white rounded-lg shadow-md overflow-hidden">
-                <div className="border-b border-gray-200">
-                  <nav className="flex">
-                    <button
-                      className={`px-6 py-4 text-sm font-medium ${
-                        activeTab === 'about' ? 'border-b-2 border-green-500 text-green-600' : 'text-gray-500 hover:text-gray-700'
-                      }`}
-                      onClick={() => setActiveTab('about')}
-                    >
-                      About
-                    </button>
-                    <button
-                      className={`px-6 py-4 text-sm font-medium ${
-                        activeTab === 'reviews' ? 'border-b-2 border-green-500 text-green-600' : 'text-gray-500 hover:text-gray-700'
-                      }`}
-                      onClick={() => setActiveTab('reviews')}
-                    >
-                      Tour History & Reviews
-                    </button>
-                  </nav>
+                <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div className="border-b border-gray-200">
+                        <nav className="flex">
+                            <button
+                            className={`px-6 py-4 text-sm font-medium cursor-pointer ${
+                                activeTab === 'about' ? 'border-b-2 border-[#d44b1d] text-[#d44b1d]' : 'text-gray-500 hover:text-gray-700'
+                            }`}
+                            onClick={() => setActiveTab('about')}
+                            >
+                            About
+                            </button>
+                            <button
+                            className={`px-6 py-4 text-sm font-medium cursor-pointer ${
+                                activeTab === 'reviews' ? 'border-b-2 border-[#d44b1d] text-[#d44b1d]' : 'text-gray-500 hover:text-gray-700'
+                            }`}
+                            onClick={() => setActiveTab('reviews')}
+                            >
+                            Tour History & Reviews
+                            </button>
+                        </nav>
+                    </div>
+                    
+                    <div className="p-6">
+                        {activeTab === 'about' && (
+                            <div>
+                                <h2 className="text-xl font-bold mb-4">About {guide.name}</h2>
+                                <p className="text-gray-700 mb-6">{guide.bio}</p>
+                                
+                                <h3 className="text-lg font-bold mb-3">Availability</h3>
+                                <div className="flex flex-wrap gap-2 mb-6">
+                                    {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) => (
+                                    <span
+                                        key={day}
+                                        className={`px-3 py-1 rounded-full text-sm ${
+                                        guide.availability.includes(day)
+                                            ? 'bg-green-100 text-green-800'
+                                            : 'bg-gray-100 text-gray-400'
+                                        }`}
+                                    >
+                                        {day}
+                                    </span>
+                                    ))}
+                                </div>
+                                
+                                <h3 className="text-lg font-bold mb-3">What to Expect</h3>
+                                <ul className="list-disc pl-5 space-y-2 text-gray-700">
+                                    <li>Personalized tour itinerary based on your interests</li>
+                                    <li>Insider knowledge of local culture and customs</li>
+                                    <li>Recommendations for restaurants, shops, and additional activities</li>
+                                    <li>Assistance with translation and navigation</li>
+                                    <li>Flexible pace to ensure a comfortable experience</li>
+                                </ul>
+                            </div>
+                        )}
+                        
+                        {activeTab === 'reviews' && (
+                            <div>
+                                <h2 className="text-xl font-bold mb-4">Tour History & Reviews</h2>
+                                
+                                <div className="space-y-6">
+                                    {guide.tourHistory.map((tour) => (
+                                    <div key={tour.id} className="border-b border-gray-200 pb-6 last:border-0">
+                                        <div className="flex justify-between items-start mb-2">
+                                        <div>
+                                            <h3 className="font-bold">{tour.client}</h3>
+                                            <p className="text-sm text-gray-600">From: {tour.from} • Tour Date: {new Date(tour.date).toLocaleDateString()}</p>
+                                        </div>
+                                        <div className="flex text-yellow-400">
+                                            {[...Array(5)].map((_, i) => (
+                                            <svg
+                                                key={i}
+                                                className={`w-5 h-5 ${i < tour.rating ? 'text-yellow-400' : 'text-gray-300'}`}
+                                                fill="currentColor"
+                                                viewBox="0 0 20 20"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                            >
+                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                            </svg>
+                                            ))}
+                                        </div>
+                                        </div>
+                                        <p className="text-gray-700">{tour.comment}</p>
+                                    </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
                 
-                <div className="p-6">
-                  {activeTab === 'about' && (
-                    <div>
-                      <h2 className="text-xl font-bold mb-4">About {guide.name}</h2>
-                      <p className="text-gray-700 mb-6">{guide.bio}</p>
-                      
-                      <h3 className="text-lg font-bold mb-3">Availability</h3>
-                      <div className="flex flex-wrap gap-2 mb-6">
-                        {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) => (
-                          <span
-                            key={day}
-                            className={`px-3 py-1 rounded-full text-sm ${
-                              guide.availability.includes(day)
-                                ? 'bg-green-100 text-green-800'
-                                : 'bg-gray-100 text-gray-400'
-                            }`}
-                          >
-                            {day}
-                          </span>
-                        ))}
-                      </div>
-                      
-                      <h3 className="text-lg font-bold mb-3">What to Expect</h3>
-                      <ul className="list-disc pl-5 space-y-2 text-gray-700">
-                        <li>Personalized tour itinerary based on your interests</li>
-                        <li>Insider knowledge of local culture and customs</li>
-                        <li>Recommendations for restaurants, shops, and additional activities</li>
-                        <li>Assistance with translation and navigation</li>
-                        <li>Flexible pace to ensure a comfortable experience</li>
-                      </ul>
-                    </div>
-                  )}
-                  
-                  {activeTab === 'reviews' && (
-                    <div>
-                      <h2 className="text-xl font-bold mb-4">Tour History & Reviews</h2>
-                      
-                      <div className="space-y-6">
-                        {guide.tourHistory.map((tour) => (
-                          <div key={tour.id} className="border-b border-gray-200 pb-6 last:border-0">
-                            <div className="flex justify-between items-start mb-2">
-                              <div>
-                                <h3 className="font-bold">{tour.client}</h3>
-                                <p className="text-sm text-gray-600">From: {tour.from} • Tour Date: {new Date(tour.date).toLocaleDateString()}</p>
-                              </div>
-                              <div className="flex text-yellow-400">
-                                {[...Array(5)].map((_, i) => (
-                                  <svg
-                                    key={i}
-                                    className={`w-5 h-5 ${i < tour.rating ? 'text-yellow-400' : 'text-gray-300'}`}
-                                    fill="currentColor"
-                                    viewBox="0 0 20 20"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                  >
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                                  </svg>
+                {guidesData.filter(g => g.id !== guide.id && g.specialty === guide.specialty).slice(0, 3).length > 0 &&
+                    (<div className="mt-12">
+                        <h2 className="text-2xl font-bold mb-6">Similar Guides You Might Like</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            {guidesData
+                                .filter(g => g.id !== guide.id && g.specialty === guide.specialty)
+                                .slice(0, 3)
+                                .map(similarGuide => (
+                                    <div key={similarGuide.id} className="bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:shadow-lg">
+                                        <img src={similarGuide.image} alt={similarGuide.name} className="w-full h-48 object-cover" />
+                                        <div className="p-4">
+                                        <h3 className="text-lg font-bold mb-1">{similarGuide.name}</h3>
+                                        <p className="text-gray-600 text-sm mb-2">{similarGuide.specialty}</p>
+                                        <div className="flex items-center mb-3">
+                                            <div className="flex text-yellow-400">
+                                            {[...Array(5)].map((_, i) => (
+                                                <svg
+                                                key={i}
+                                                className={`w-4 h-4 ${i < Math.floor(similarGuide.rating) ? 'text-yellow-400' : 'text-gray-300'}`}
+                                                fill="currentColor"
+                                                viewBox="0 0 20 20"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                >
+                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                                </svg>
+                                            ))}
+                                            </div>
+                                            <span className="text-gray-600 text-sm ml-1">
+                                            {similarGuide.rating} ({similarGuide.reviews})
+                                            </span>
+                                        </div>
+                                        <button
+                                            onClick={() => {
+                                                navigate(`/guides/${similarGuide.id}`)
+                                                window.scrollTo(0, 0)
+                                            }}
+                                            className="block text-center bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded transition-colors cursor-pointer"
+                                        >
+                                            View Profile
+                                        </button>
+                                        </div>
+                                    </div>
                                 ))}
-                              </div>
-                            </div>
-                            <p className="text-gray-700">{tour.comment}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-              
-              {/* Similar Guides */}
-              <div className="mt-12">
-                <h2 className="text-2xl font-bold mb-6">Similar Guides You Might Like</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {guidesData
-                    .filter(g => g.id !== guide.id && g.specialty === guide.specialty)
-                    .slice(0, 3)
-                    .map(similarGuide => (
-                      <div key={similarGuide.id} className="bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:shadow-lg">
-                        <img src={similarGuide.image} alt={similarGuide.name} className="w-full h-48 object-cover" />
-                        <div className="p-4">
-                          <h3 className="text-lg font-bold mb-1">{similarGuide.name}</h3>
-                          <p className="text-gray-600 text-sm mb-2">{similarGuide.specialty}</p>
-                          <div className="flex items-center mb-3">
-                            <div className="flex text-yellow-400">
-                              {[...Array(5)].map((_, i) => (
-                                <svg
-                                  key={i}
-                                  className={`w-4 h-4 ${i < Math.floor(similarGuide.rating) ? 'text-yellow-400' : 'text-gray-300'}`}
-                                  fill="currentColor"
-                                  viewBox="0 0 20 20"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                                </svg>
-                              ))}
-                            </div>
-                            <span className="text-gray-600 text-sm ml-1">
-                              {similarGuide.rating} ({similarGuide.reviews})
-                            </span>
-                          </div>
-                          <Link
-                            to={`/guides/${similarGuide.id}`}
-                            className="block text-center bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded transition-colors"
-                          >
-                            View Profile
-                          </Link>
                         </div>
-                      </div>
-                    ))}
-                </div>
-              </div>
+                    </div>)
+                }
             </div>
         </div>
     )

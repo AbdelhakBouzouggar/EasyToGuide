@@ -1,35 +1,33 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
-// Sample data for the slider
 const sliderData = [
     {
         id: 1,
         title: "Jemaa el-Fnaa Square",
         description: "Experience the vibrant heart of Marrakech with its bustling markets and street performers.",
-        image: "https://images.unsplash.com/photo-1548018560-c7196548e84d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+        image: "/Images/jemaa_el-fnaa.jpg"
     },
     {
         id: 2,
         title: "Majorelle Garden",
         description: "Explore the stunning botanical garden with its vibrant blue buildings and exotic plants.",
-        image: "https://images.unsplash.com/photo-1535320485706-44d43b919500?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+        image: "/Images/majorelle.jpg"
     },
     {
         id: 3,
         title: "Bahia Palace",
         description: "Discover the intricate architecture and beautiful gardens of this 19th-century palace.",
-        image: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+        image: "/Images/bahia-palace.jpg"
     },
     {
         id: 4,
         title: "Koutoubia Mosque",
         description: "Admire the iconic minaret that dominates Marrakech's skyline.",
-        image: "https://images.unsplash.com/photo-1564507004663-b6dfb3c824d5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+        image: "/Images/koutoubia-marrakech.jpg"
     }
 ]
 
-// Sample data for top guides
 const topGuides = [
     {
         id: 1,
@@ -57,10 +55,10 @@ const topGuides = [
     }
 ]
 
-const Home = () => {
+function Home() {
     const [currentSlide, setCurrentSlide] = useState(0)
+    const navigate = useNavigate()
 
-    // Auto-advance the slider
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentSlide((prev) => (prev === sliderData.length - 1 ? 0 : prev + 1))
@@ -78,7 +76,6 @@ const Home = () => {
 
     return (
         <div className="min-h-screen">
-            {/* Hero Slider */}
             <div className="relative h-[500px] overflow-hidden">
             {sliderData.map((slide, index) => (
                 <div
@@ -95,19 +92,21 @@ const Home = () => {
                 <div className="container mx-auto px-4 h-full flex flex-col justify-center items-center text-center text-white">
                     <h1 className="text-4xl md:text-5xl font-bold mb-4">{slide.title}</h1>
                     <p className="text-xl md:text-2xl mb-8 max-w-2xl">{slide.description}</p>
-                    <Link
-                    to="/guides"
-                    className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-full transition-colors"
+                    <button
+                        onClick={() => {
+                            navigate("/guides")
+                            window.scrollTo(0, 0)
+                        }}
+                        className="bg-[#d44b1d] hover:bg-[#d44b1dea] text-white font-bold py-3 px-6 rounded-full transition-colors cursor-pointer"
                     >
-                    Find a Guide
-                    </Link>
+                        Find a Guide
+                    </button>
                 </div>
                 </div>
             ))}
 
-            {/* Slider Controls */}
             <button
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full"
+                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full cursor-pointer"
                 onClick={prevSlide}
             >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -115,7 +114,7 @@ const Home = () => {
                 </svg>
             </button>
             <button
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full"
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full cursor-pointer"
                 onClick={nextSlide}
             >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -123,7 +122,6 @@ const Home = () => {
                 </svg>
             </button>
 
-            {/* Slider Indicators */}
             <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-2">
                 {sliderData.map((_, index) => (
                 <button
@@ -137,7 +135,6 @@ const Home = () => {
             </div>
             </div>
 
-            {/* Top Guides Section */}
             <section className="py-16 bg-gray-100">
             <div className="container mx-auto px-4">
                 <h2 className="text-3xl font-bold text-center mb-12">Our Top Guides in Marrakech</h2>
@@ -167,29 +164,34 @@ const Home = () => {
                             {guide.rating} ({guide.reviews} reviews)
                         </span>
                         </div>
-                        <Link
-                        to={`/guides/${guide.id}`}
-                        className="block text-center bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded transition-colors"
+                        <button
+                            onClick={() => {
+                                navigate(`/guides/${guide.id}`)
+                                window.scrollTo(0, 0)
+                            }}
+                            className="block text-center bg-[#d44b1d] hover:bg-[#d44b1dea] text-white font-medium py-2 px-4 rounded transition-colors cursor-pointer"
                         >
-                        Book Now
-                        </Link>
+                            Book Now
+                        </button>
                     </div>
                     </div>
                 ))}
                 </div>
                 
                 <div className="text-center mt-12">
-                <Link
-                    to="/guides"
-                    className="inline-block border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white font-bold py-3 px-6 rounded-full transition-colors"
+                <button
+                    onClick={() => {
+                        navigate("/guides")
+                        window.scrollTo(0, 0)
+                    }}
+                    className="inline-block border-2 border-[#d44b1d] text-[#d44b1d] hover:bg-[#d44b1d] hover:text-white font-bold py-3 px-6 rounded-full transition-colors cursor-pointer"
                 >
                     View All Guides
-                </Link>
+                </button>
                 </div>
             </div>
             </section>
 
-            {/* Why Choose Us Section */}
             <section className="py-16">
             <div className="container mx-auto px-4">
                 <h2 className="text-3xl font-bold text-center mb-12">Why Choose EasyToGuide</h2>
@@ -228,17 +230,19 @@ const Home = () => {
             </div>
             </section>
 
-            {/* Call to Action */}
-            <section className="py-16 bg-green-600 text-white">
+            <section className="py-16 bg-[#d44b1d] text-white">
             <div className="container mx-auto px-4 text-center">
                 <h2 className="text-3xl font-bold mb-4">Ready to Explore Marrakech?</h2>
                 <p className="text-xl mb-8 max-w-2xl mx-auto">Book your perfect guide today and discover the magic of Marrakech with a local expert.</p>
-                <Link
-                to="/guides"
-                className="bg-white text-green-600 hover:bg-gray-100 font-bold py-3 px-8 rounded-full text-lg transition-colors"
+                <button
+                    onClick={() => {
+                        navigate("/guides")
+                        window.scrollTo(0, 0)
+                    }}
+                    className="bg-white text-[#d44b1d] hover:bg-gray-100 font-bold py-3 px-8 rounded-full text-lg transition-colors cursor-pointer"
                 >
-                Find Your Guide
-                </Link>
+                    Find Your Guide
+                </button>
             </div>
             </section>
         </div>

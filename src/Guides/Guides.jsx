@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
-// Sample data for guides
 const guidesData = [
     {
         id: 1,
@@ -77,15 +76,13 @@ const guidesData = [
     }
 ]
 
-const Guides = () => {
+function Guides() {
     const [searchTerm, setSearchTerm] = useState('')
     const [selectedSpecialty, setSelectedSpecialty] = useState('')
     const [priceRange, setPriceRange] = useState([0, 1000])
 
-    // Get unique specialties for filter
     const specialties = [...new Set(guidesData.map(guide => guide.specialty))]
 
-    // Filter guides based on search term, specialty, and price range
     const filteredGuides = guidesData.filter(guide => {
         const matchesSearch = guide.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                               guide.description.toLowerCase().includes(searchTerm.toLowerCase())
@@ -95,33 +92,32 @@ const Guides = () => {
         return matchesSearch && matchesSpecialty && matchesPrice
     })
 
+    const navigate = useNavigate()
+
     return (
         <div className="min-h-screen bg-gray-50 py-12">
             <div className="container mx-auto px-4">
               <h1 className="text-3xl font-bold text-center mb-8">Find Your Perfect Guide in Marrakech</h1>
               
-              {/* Search and Filters */}
               <div className="bg-white rounded-lg shadow-md p-6 mb-8">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {/* Search */}
                   <div>
                     <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-1">Search</label>
                     <input
                       type="text"
                       id="search"
                       placeholder="Search by name or description"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#d44b1d] focus:outline-none focus:border-[#d44b1d]"
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                     />
                   </div>
                   
-                  {/* Specialty Filter */}
                   <div>
                     <label htmlFor="specialty" className="block text-sm font-medium text-gray-700 mb-1">Specialty</label>
                     <select
                       id="specialty"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#d44b1d] focus:outline-none focus:border-[#d44b1d]"
                       value={selectedSpecialty}
                       onChange={(e) => setSelectedSpecialty(e.target.value)}
                     >
@@ -132,7 +128,6 @@ const Guides = () => {
                     </select>
                   </div>
                   
-                  {/* Price Range */}
                   <div>
                     <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
                       Price Range: {priceRange[0]} - {priceRange[1]} MAD
@@ -162,7 +157,6 @@ const Guides = () => {
                 </div>
               </div>
               
-              {/* Guides List */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {filteredGuides.length > 0 ? (
                   filteredGuides.map(guide => (
@@ -177,7 +171,6 @@ const Guides = () => {
                         </div>
                         <p className="text-gray-600 font-medium mb-2">{guide.specialty}</p>
                         
-                        {/* Rating */}
                         <div className="flex items-center mb-4">
                           <div className="flex text-yellow-400">
                             {[...Array(5)].map((_, i) => (
@@ -197,7 +190,6 @@ const Guides = () => {
                           </span>
                         </div>
                         
-                        {/* Languages */}
                         <div className="mb-4">
                           <p className="text-sm text-gray-600 mb-1">Languages:</p>
                           <div className="flex flex-wrap gap-1">
@@ -212,18 +204,24 @@ const Guides = () => {
                         <p className="text-gray-700 mb-4 line-clamp-3">{guide.description}</p>
                         
                         <div className="flex space-x-2">
-                          <Link
-                            to={`/guides/${guide.id}`}
-                            className="flex-1 bg-white border border-green-600 text-green-600 hover:bg-green-50 font-medium py-2 px-4 rounded text-center transition-colors"
+                          <button
+                            onClick={() => {
+                                navigate(`/guides/${guide.id}`)
+                                window.scrollTo(0, 0)
+                            }}
+                            className="flex-1 bg-white border border-[#d44b1d] text-[#d44b1d] hover:bg-[#f4dfd8ea] font-medium py-2 px-4 rounded text-center transition-colors cursor-pointer"
                           >
                             View Details
-                          </Link>
-                          <Link
-                            to={`/guides/${guide.id}`}
-                            className="flex-1 bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded text-center transition-colors"
+                          </button>
+                          <button
+                            onClick={() => {
+                                navigate(`/guides/${guide.id}`)
+                                window.scrollTo(0, 0)
+                            }}
+                            className="flex-1 bg-[#d44b1d] hover:bg-[#d44b1dea] text-white font-medium py-2 px-4 rounded text-center transition-colors cursor-pointer"
                           >
                             Hire Now
-                          </Link>
+                          </button>
                         </div>
                       </div>
                     </div>

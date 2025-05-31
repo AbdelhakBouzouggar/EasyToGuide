@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 
-// Sample user settings data
 const initialSettings = {
     account: {
         email: "john.smith@example.com",
@@ -15,7 +14,7 @@ const initialSettings = {
         guideMessages: true
     },
     privacy: {
-        profileVisibility: "public", // public, registered, private
+        profileVisibility: "public",
         showReviews: true,
         shareActivity: true
     },
@@ -26,7 +25,7 @@ const initialSettings = {
     }
 }
 
-const Settings = () => {
+function Settings() {
     const [settings, setSettings] = useState(initialSettings)
     const [activeTab, setActiveTab] = useState('account')
     const [showPasswordModal, setShowPasswordModal] = useState(false)
@@ -72,7 +71,6 @@ const Settings = () => {
     const handlePasswordSubmit = (e) => {
         e.preventDefault()
         
-        // Validate passwords
         if (passwordData.newPassword !== passwordData.confirmPassword) {
             showNotification("New passwords don't match", "error")
             return
@@ -83,10 +81,8 @@ const Settings = () => {
             return
         }
         
-        // Here you would typically send the password change request to your backend
         console.log('Password change requested:', passwordData)
         
-        // Reset form and close modal
         setPasswordData({
             currentPassword: '',
             newPassword: '',
@@ -100,7 +96,6 @@ const Settings = () => {
     const showNotification = (message, type = "success") => {
         setNotification({ message, type })
         
-        // Clear notification after 3 seconds
         setTimeout(() => {
             setNotification(null)
         }, 3000)
@@ -111,7 +106,6 @@ const Settings = () => {
           <div className="container mx-auto px-4">
             <h1 className="text-3xl font-bold mb-8">Account Settings</h1>
             
-            {/* Notification */}
             {notification && (
               <div className={`mb-6 p-4 rounded-md ${
                 notification.type === "success" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
@@ -121,43 +115,42 @@ const Settings = () => {
             )}
             
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
-              {/* Tabs */}
               <div className="flex border-b">
                 <button
-                  className={`px-6 py-4 text-lg font-medium ${
+                  className={`px-6 py-4 text-lg font-medium cursor-pointer ${
                     activeTab === 'account' 
-                      ? 'text-green-600 border-b-2 border-green-600' 
-                      : 'text-gray-600 hover:text-green-600'
+                      ? 'text-[#d44b1d] border-b-2 border-[#d44b1d]' 
+                      : 'text-gray-600 hover:text-[#d44b1d]'
                   }`}
                   onClick={() => setActiveTab('account')}
                 >
                   Account
                 </button>
                 <button
-                  className={`px-6 py-4 text-lg font-medium ${
+                  className={`px-6 py-4 text-lg font-medium cursor-pointer ${
                     activeTab === 'notifications' 
-                      ? 'text-green-600 border-b-2 border-green-600' 
-                      : 'text-gray-600 hover:text-green-600'
+                      ? 'text-[#d44b1d] border-b-2 border-[#d44b1d]' 
+                      : 'text-gray-600 hover:text-[#d44b1d]'
                   }`}
                   onClick={() => setActiveTab('notifications')}
                 >
                   Notifications
                 </button>
                 <button
-                  className={`px-6 py-4 text-lg font-medium ${
+                  className={`px-6 py-4 text-lg font-medium cursor-pointer ${
                     activeTab === 'privacy' 
-                      ? 'text-green-600 border-b-2 border-green-600' 
-                      : 'text-gray-600 hover:text-green-600'
+                      ? 'text-[#d44b1d] border-b-2 border-[#d44b1d]' 
+                      : 'text-gray-600 hover:text-[#d44b1d]'
                   }`}
                   onClick={() => setActiveTab('privacy')}
                 >
                   Privacy
                 </button>
                 <button
-                  className={`px-6 py-4 text-lg font-medium ${
+                  className={`px-6 py-4 text-lg font-medium cursor-pointer ${
                     activeTab === 'preferences' 
-                      ? 'text-green-600 border-b-2 border-green-600' 
-                      : 'text-gray-600 hover:text-green-600'
+                      ? 'text-[#d44b1d] border-b-2 border-[#d44b1d]' 
+                      : 'text-gray-600 hover:text-[#d44b1d]'
                   }`}
                   onClick={() => setActiveTab('preferences')}
                 >
@@ -165,9 +158,7 @@ const Settings = () => {
                 </button>
               </div>
               
-              {/* Tab Content */}
               <div className="p-6">
-                {/* Account Settings */}
                 {activeTab === 'account' && (
                   <div>
                     <h2 className="text-xl font-bold mb-6">Account Information</h2>
@@ -179,10 +170,10 @@ const Settings = () => {
                           <input
                             type="email"
                             value={settings.account.email}
-                            className="flex-grow px-4 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 bg-gray-50"
+                            className="flex-grow px-4 py-2 border border-gray-300 rounded-md focus:ring-[#d44b1d] focus:outline-none focus:border-[#d44b1d] bg-gray-50"
                             readOnly
                           />
-                          <button className="ml-4 text-green-600 hover:text-green-700 font-medium">
+                          <button className="ml-4 text-green-600 hover:text-green-700 font-medium cursor-pointer">
                             Change
                           </button>
                         </div>
@@ -194,11 +185,11 @@ const Settings = () => {
                           <input
                             type="password"
                             value={settings.account.password}
-                            className="flex-grow px-4 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 bg-gray-50"
+                            className="flex-grow px-4 py-2 border border-gray-300 rounded-md focus:ring-[#d44b1d] focus:outline-none focus:border-[#d44b1d] bg-gray-50"
                             readOnly
                           />
                           <button 
-                            className="ml-4 text-green-600 hover:text-green-700 font-medium"
+                            className="ml-4 text-green-600 hover:text-green-700 font-medium cursor-pointer"
                             onClick={() => setShowPasswordModal(true)}
                           >
                             Change
@@ -212,10 +203,10 @@ const Settings = () => {
                           <input
                             type="tel"
                             value={settings.account.phone}
-                            className="flex-grow px-4 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 bg-gray-50"
+                            className="flex-grow px-4 py-2 border border-gray-300 rounded-md focus:ring-[#d44b1d] focus:outline-none focus:border-[#d44b1d] bg-gray-50"
                             readOnly
                           />
-                          <button className="ml-4 text-green-600 hover:text-green-700 font-medium">
+                          <button className="ml-4 text-green-600 hover:text-green-700 font-medium cursor-pointer">
                             Change
                           </button>
                         </div>
@@ -226,7 +217,7 @@ const Settings = () => {
                         <p className="text-gray-600 mb-4">
                           Once you delete your account, there is no going back. Please be certain.
                         </p>
-                        <button className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md">
+                        <button className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md cursor-pointer">
                           Delete Account
                         </button>
                       </div>
@@ -234,7 +225,6 @@ const Settings = () => {
                   </div>
                 )}
                 
-                {/* Notification Settings */}
                 {activeTab === 'notifications' && (
                   <div>
                     <h2 className="text-xl font-bold mb-6">Notification Preferences</h2>
@@ -323,7 +313,6 @@ const Settings = () => {
                   </div>
                 )}
                 
-                {/* Privacy Settings */}
                 {activeTab === 'privacy' && (
                   <div>
                     <h2 className="text-xl font-bold mb-6">Privacy Settings</h2>
@@ -332,7 +321,7 @@ const Settings = () => {
                       <div>
                         <label className="block text-gray-700 font-medium mb-2">Profile Visibility</label>
                         <select
-                          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#d44b1d] focus:outline-none cursor-pointer focus:border-[#d44b1d]"
                           value={settings.privacy.profileVisibility}
                           onChange={(e) => handleSelectChange('privacy', 'profileVisibility', e.target.value)}
                         >
@@ -380,10 +369,10 @@ const Settings = () => {
                           You can request a copy of your data or delete all your data from our platform.
                         </p>
                         <div className="flex space-x-4">
-                          <button className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-md">
+                          <button className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-md cursor-pointer">
                             Download My Data
                           </button>
-                          <button className="bg-red-100 hover:bg-red-200 text-red-700 font-medium py-2 px-4 rounded-md">
+                          <button className="bg-red-100 hover:bg-red-200 text-red-700 font-medium py-2 px-4 rounded-md cursor-pointer">
                             Delete My Data
                           </button>
                         </div>
@@ -392,7 +381,6 @@ const Settings = () => {
                   </div>
                 )}
                 
-                {/* Preferences Settings */}
                 {activeTab === 'preferences' && (
                   <div>
                     <h2 className="text-xl font-bold mb-6">User Preferences</h2>
@@ -401,7 +389,7 @@ const Settings = () => {
                       <div>
                         <label className="block text-gray-700 font-medium mb-2">Language</label>
                         <select
-                          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#d44b1d] focus:outline-none focus:border-[#d44b1d] cursor-pointer"
                           value={settings.preferences.language}
                           onChange={(e) => handleSelectChange('preferences', 'language', e.target.value)}
                         >
@@ -416,7 +404,7 @@ const Settings = () => {
                       <div>
                         <label className="block text-gray-700 font-medium mb-2">Currency</label>
                         <select
-                          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#d44b1d] focus:outline-none focus:border-[#d44b1d] cursor-pointer"
                           value={settings.preferences.currency}
                           onChange={(e) => handleSelectChange('preferences', 'currency', e.target.value)}
                         >
@@ -430,7 +418,7 @@ const Settings = () => {
                       <div>
                         <label className="block text-gray-700 font-medium mb-2">Time Format</label>
                         <select
-                          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#d44b1d] focus:outline-none focus:border-[#d44b1d] cursor-pointer"
                           value={settings.preferences.timeFormat}
                           onChange={(e) => handleSelectChange('preferences', 'timeFormat', e.target.value)}
                         >
@@ -445,7 +433,6 @@ const Settings = () => {
             </div>
           </div>
           
-          {/* Password Change Modal */}
           {showPasswordModal && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
               <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
@@ -453,7 +440,7 @@ const Settings = () => {
                   <h3 className="text-xl font-bold">Change Password</h3>
                   <button 
                     onClick={() => setShowPasswordModal(false)}
-                    className="text-gray-500 hover:text-gray-700"
+                    className="text-gray-500 hover:text-gray-700 cursor-pointer"
                   >
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -469,7 +456,7 @@ const Settings = () => {
                       name="currentPassword"
                       value={passwordData.currentPassword}
                       onChange={handlePasswordChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#d44b1d] focus:outline-none focus:border-[#d44b1d]"
                       required
                     />
                   </div>
@@ -481,7 +468,7 @@ const Settings = () => {
                       name="newPassword"
                       value={passwordData.newPassword}
                       onChange={handlePasswordChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#d44b1d] focus:outline-none focus:border-[#d44b1d]"
                       required
                     />
                     <p className="text-sm text-gray-600 mt-1">
@@ -496,7 +483,7 @@ const Settings = () => {
                       name="confirmPassword"
                       value={passwordData.confirmPassword}
                       onChange={handlePasswordChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#d44b1d] focus:outline-none focus:border-[#d44b1d]"
                       required
                     />
                   </div>
@@ -505,13 +492,13 @@ const Settings = () => {
                     <button
                       type="button"
                       onClick={() => setShowPasswordModal(false)}
-                      className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                      className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 cursor-pointer"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+                      className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 cursor-pointer"
                     >
                       Update Password
                     </button>

@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 
-// Sample user data
 const userData = {
     id: 1,
     name: "John Smith",
@@ -52,7 +51,7 @@ const userData = {
     ]
 }
 
-const Profile = () => {
+function Profile() {
     const [activeTab, setActiveTab] = useState('upcoming')
     const [isEditing, setIsEditing] = useState(false)
     const [formData, setFormData] = useState({
@@ -72,17 +71,14 @@ const Profile = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        // Here you would typically send the updated data to your backend
         console.log('Updated profile data:', formData)
         setIsEditing(false)
-        // In a real app, you would update the userData state with the response from the backend
     }
 
     return (
         <div className="min-h-screen bg-gray-50 py-12">
             <div className="container mx-auto px-4">
                 <div className="max-w-5xl mx-auto">
-                    {/* Profile Header */}
                     <div className="bg-white rounded-lg shadow-md overflow-hidden mb-8">
                     <div className="md:flex">
                         <div className="md:w-1/3 p-6 flex flex-col items-center justify-center border-r border-gray-200">
@@ -107,7 +103,7 @@ const Profile = () => {
                                     name="name"
                                     value={formData.name}
                                     onChange={handleInputChange}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#d44b1d] focus:outline-none focus:border-[#d44b1d]"
                                     required
                                 />
                                 </div>
@@ -119,7 +115,7 @@ const Profile = () => {
                                     name="email"
                                     value={formData.email}
                                     onChange={handleInputChange}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#d44b1d] focus:outline-none focus:border-[#d44b1d]"
                                     required
                                 />
                                 </div>
@@ -131,7 +127,7 @@ const Profile = () => {
                                     name="phone"
                                     value={formData.phone}
                                     onChange={handleInputChange}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#d44b1d] focus:outline-none focus:border-[#d44b1d]"
                                 />
                                 </div>
                                 <div>
@@ -142,7 +138,7 @@ const Profile = () => {
                                     name="country"
                                     value={formData.country}
                                     onChange={handleInputChange}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#d44b1d] focus:outline-none focus:border-[#d44b1d]"
                                 />
                                 </div>
                             </div>
@@ -150,13 +146,13 @@ const Profile = () => {
                                 <button
                                 type="button"
                                 onClick={() => setIsEditing(false)}
-                                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 cursor-pointer"
                                 >
                                 Cancel
                                 </button>
                                 <button
                                 type="submit"
-                                className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+                                className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 cursor-pointer"
                                 >
                                 Save Changes
                                 </button>
@@ -168,7 +164,7 @@ const Profile = () => {
                                 <h2 className="text-xl font-bold">Personal Information</h2>
                                 <button
                                 onClick={() => setIsEditing(true)}
-                                className="text-green-600 hover:text-green-700 flex items-center"
+                                className="text-green-600 hover:text-green-700 flex items-center cursor-pointer"
                                 >
                                 <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
@@ -196,29 +192,28 @@ const Profile = () => {
                     </div>
                     </div>
                     
-                    {/* Tabs */}
                     <div className="bg-white rounded-lg shadow-md overflow-hidden">
                     <div className="border-b border-gray-200">
                         <nav className="flex">
                         <button
-                            className={`px-6 py-4 text-sm font-medium ${
-                            activeTab === 'upcoming' ? 'border-b-2 border-green-500 text-green-600' : 'text-gray-500 hover:text-gray-700'
+                            className={`px-6 py-4 text-sm font-medium cursor-pointer ${
+                            activeTab === 'upcoming' ? 'border-b-2 border-[#d44b1d] text-[#d44b1dea]' : 'text-gray-500 hover:text-gray-700'
                             }`}
                             onClick={() => setActiveTab('upcoming')}
                         >
                             Upcoming Tours
                         </button>
                         <button
-                            className={`px-6 py-4 text-sm font-medium ${
-                            activeTab === 'past' ? 'border-b-2 border-green-500 text-green-600' : 'text-gray-500 hover:text-gray-700'
+                            className={`px-6 py-4 text-sm font-medium cursor-pointer ${
+                            activeTab === 'past' ? 'border-b-2 border-[#d44b1d] text-[#d44b1dea]' : 'text-gray-500 hover:text-gray-700'
                             }`}
                             onClick={() => setActiveTab('past')}
                         >
                             Past Tours
                         </button>
                         <button
-                            className={`px-6 py-4 text-sm font-medium ${
-                            activeTab === 'saved' ? 'border-b-2 border-green-500 text-green-600' : 'text-gray-500 hover:text-gray-700'
+                            className={`px-6 py-4 text-sm font-medium cursor-pointer ${
+                            activeTab === 'saved' ? 'border-b-2 border-[#d44b1d] text-[#d44b1dea]' : 'text-gray-500 hover:text-gray-700'
                             }`}
                             onClick={() => setActiveTab('saved')}
                         >
@@ -228,7 +223,6 @@ const Profile = () => {
                     </div>
                     
                     <div className="p-6">
-                        {/* Upcoming Tours */}
                         {activeTab === 'upcoming' && (
                         <div>
                             <h2 className="text-xl font-bold mb-4">Upcoming Tours</h2>
@@ -257,10 +251,10 @@ const Profile = () => {
                                     <div className="flex justify-between items-center mt-4">
                                     <span className="font-medium">{tour.price} {tour.currency}</span>
                                     <div className="space-x-2">
-                                        <button className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                                        <button className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 cursor-pointer">
                                         Cancel
                                         </button>
-                                        <button className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                                        <button className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 cursor-pointer">
                                         View Details
                                         </button>
                                     </div>
@@ -274,7 +268,6 @@ const Profile = () => {
                         </div>
                         )}
                         
-                        {/* Past Tours */}
                         {activeTab === 'past' && (
                         <div>
                             <h2 className="text-xl font-bold mb-4">Past Tours</h2>
@@ -311,7 +304,7 @@ const Profile = () => {
                                     <p className="text-gray-700 mb-3">{tour.review}</p>
                                     <div className="flex justify-between items-center">
                                     <span className="font-medium">{tour.price} {tour.currency}</span>
-                                    <button className="px-4 py-2 border border-green-600 text-green-600 rounded-md hover:bg-green-50">
+                                    <button className="px-4 py-2 border border-[#d44b1d] text-[#d44b1d] rounded-md hover:bg-[#fff4f1] cursor-pointer">
                                         Book Again
                                     </button>
                                     </div>
@@ -324,7 +317,6 @@ const Profile = () => {
                         </div>
                         )}
                         
-                        {/* Saved Guides */}
                         {activeTab === 'saved' && (
                         <div>
                             <h2 className="text-xl font-bold mb-4">Saved Guides</h2>
@@ -337,13 +329,13 @@ const Profile = () => {
                                     <h3 className="font-bold mb-1">{guide.name}</h3>
                                     <p className="text-gray-600 mb-4">{guide.specialty}</p>
                                     <div className="flex justify-between">
-                                        <button className="text-red-600 hover:text-red-700 flex items-center">
-                                        <svg className="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                            <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd"></path>
-                                        </svg>
-                                        Remove
+                                        <button className="text-red-600 hover:text-red-700 flex items-center cursor-pointer">
+                                            <svg className="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd"></path>
+                                            </svg>
+                                            Remove
                                         </button>
-                                        <button className="text-green-600 hover:text-green-700">
+                                        <button className="text-green-600 hover:text-green-700 cursor-pointer">
                                         View Profile
                                         </button>
                                     </div>

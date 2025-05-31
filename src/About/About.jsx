@@ -1,6 +1,6 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
-// Team member data
 const teamMembers = [
     {
         id: 1,
@@ -36,11 +36,12 @@ const teamMembers = [
     }
 ]
 
-const About = () => {
+function About() {
+    const navigate = useNavigate()
+
     return (
         <div className="min-h-screen bg-gray-50">
-          {/* Hero Section */}
-          <div className="bg-green-600 text-white py-20">
+          <div className="bg-[#d44b1d] text-white py-20">
             <div className="container mx-auto px-4 text-center">
               <h1 className="text-4xl md:text-5xl font-bold mb-6">About EasyToGuide</h1>
               <p className="text-xl max-w-3xl mx-auto">
@@ -49,7 +50,6 @@ const About = () => {
             </div>
           </div>
 
-          {/* Our Story Section */}
           <section className="py-16">
             <div className="container mx-auto px-4">
               <div className="max-w-4xl mx-auto">
@@ -74,7 +74,6 @@ const About = () => {
             </div>
           </section>
 
-          {/* Our Values Section */}
           <section className="py-16 bg-gray-100">
             <div className="container mx-auto px-4">
               <h2 className="text-3xl font-bold text-center mb-12">Our Values</h2>
@@ -118,7 +117,6 @@ const About = () => {
             </div>
           </section>
 
-          {/* Meet the Team Section */}
           <section className="py-16">
             <div className="container mx-auto px-4">
               <h2 className="text-3xl font-bold text-center mb-12">Meet Our Team</h2>
@@ -128,7 +126,7 @@ const About = () => {
                     <img src={member.image} alt={member.name} className="w-full h-64 object-cover" />
                     <div className="p-6">
                       <h3 className="text-xl font-bold mb-1">{member.name}</h3>
-                      <p className="text-green-600 font-medium mb-4">{member.role}</p>
+                      <p className="text-[#d44b1d] font-medium mb-4">{member.role}</p>
                       <p className="text-gray-700">{member.bio}</p>
                     </div>
                   </div>
@@ -137,8 +135,7 @@ const About = () => {
             </div>
           </section>
 
-          {/* Join Us Section */}
-          <section className="py-16 bg-green-600 text-white">
+          <section className="py-16 bg-[#d44b1d] text-white">
             <div className="container mx-auto px-4 text-center">
               <h2 className="text-3xl font-bold mb-6">Join Our Community</h2>
               <p className="text-xl mb-8 max-w-3xl mx-auto">
@@ -146,12 +143,22 @@ const About = () => {
                 we invite you to be part of our growing community.
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4">
-                <a href="#" className="bg-white text-green-600 hover:bg-gray-100 font-bold py-3 px-8 rounded-full text-lg transition-colors">
+                <button
+                    onClick={() => {
+                        navigate("/login")
+                        window.scrollTo(0, 0)
+                    }}
+                    className="bg-white text-[#d44b1d] hover:bg-gray-100 font-bold py-3 px-8 rounded-full text-lg transition-colors cursor-pointer">
                   Become a Guide
-                </a>
-                <a href="#" className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-green-600 font-bold py-3 px-8 rounded-full text-lg transition-colors">
+                </button>
+                <button
+                    onClick={() => {
+                        navigate("/contact")
+                        window.scrollTo(0, 0)
+                    }}
+                    className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-[#d44b1d] font-bold py-3 px-8 rounded-full text-lg transition-colors cursor-pointer">
                   Contact Us
-                </a>
+                </button>
               </div>
             </div>
           </section>
