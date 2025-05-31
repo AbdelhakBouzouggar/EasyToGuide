@@ -10,6 +10,8 @@ import Profile from '../Profile/Profile'
 import Contact from '../Contact/Contact'
 import Settings from '../Settings/Settings'
 import NotFound from '../NotFound/NotFound'
+import Login from '../Auth/Login'
+import Register from '../Auth/Register'
 
 const Layout = ({ children }) => {
     const location = useLocation()
@@ -50,6 +52,10 @@ const Routes = () => {
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/settings" element={<Settings />} />
+
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+
                 <Route path="*" element={<NotFound />} />
                 </RouterRoutes>
             </Layout>
